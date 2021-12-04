@@ -9,9 +9,9 @@ const path = require('path')
 const pino = require('pino')
 const pinoHttp = require('pino-http')
 
-module.exports = function main (options, cb) {
+module.exports = function main(options, cb) {
   // Set default options
-  const ready = cb || function () { }
+  const ready = cb || function() {}
   const opts = Object.assign(
     {
       // Default options
@@ -35,7 +35,7 @@ module.exports = function main (options, cb) {
   })
 
   // Setup error handling
-  function unhandledError (err) {
+  function unhandledError(err) {
     // Log the errors
     logger.error(err)
 
@@ -48,7 +48,7 @@ module.exports = function main (options, cb) {
     // If server has started, close it down
     if (serverStarted) {
       mongoose.disconnect()
-      server.close(function () {
+      server.close(function() {
         process.exit(1)
       })
     }
@@ -87,10 +87,11 @@ module.exports = function main (options, cb) {
   app.use(bodyParser)
 
   // Common error handlers
-  app.use(function fourOhFourHandler (req, res, next) {
+  app.use(function fourOhFourHandler(req, res, next) {
     next(httpErrors(404, `Route not found: ${req.url}`))
   })
-  app.use(function fiveHundredHandler (err, req, res, next) { // eslint-disable-line no-unused-vars
+  app.use(function fiveHundredHandler(err, req, res, next) {
+    // eslint-disable-line no-unused-vars
     if (err.status >= 500) {
       logger.error(err)
     }
@@ -100,7 +101,7 @@ module.exports = function main (options, cb) {
   })
 
   // Start server
-  server = app.listen(opts.port, opts.host, function (err) {
+  server = app.listen(opts.port, opts.host, function(err) {
     if (err) {
       return ready(err, app, server)
     }
