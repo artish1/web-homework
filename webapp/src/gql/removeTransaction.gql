@@ -1,0 +1,11 @@
+mutation RemoveTransaction($transaction_id: String) {
+  removeTransaction(transaction_id: $transaction_id) {
+    id
+    debit
+    description
+    amount
+    credit
+    user_id
+    merchant_id
+  }
+}
