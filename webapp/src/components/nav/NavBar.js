@@ -10,7 +10,7 @@ export function NavBar() {
           <Link to='/'>Home</Link>
         </li>
         <li>
-          <Link to='/another'>Another route</Link>
+          <Link to='/transactions'>Transactions</Link>
         </li>
       </ul>
     </nav>

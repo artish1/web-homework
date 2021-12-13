@@ -1,0 +1,12 @@
+query GetUsersAndMerchants {
+  users {
+    id
+    firstName
+    lastName
+  }
+  merchants {
+    id
+    name
+    description
+  }
+}

@@ -1,6 +1,7 @@
 {
   "extends": "divvy",
   "rules": {
-    "space-before-function-paren": "warn"
+    "space-before-function-paren": "warn",
+    "react/jsx-wrap-multilines": "off"
   }
 }
