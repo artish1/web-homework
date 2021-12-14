@@ -12,6 +12,7 @@ import {
   CircularProgress,
   DialogContentText,
   FormControlLabel,
+  FormHelperText,
   Checkbox,
   TextField
 } from '@material-ui/core'
@@ -27,6 +28,7 @@ export const TransactionDialog = ({ handleClose, open }) => {
     refetchQueries: ['GetTransactions'],
     awaitRefetchQueries: true
   })
+  const [formErrors, setFormErrors] = useState(defaultFormErrors)
   const [user, setUser] = useState('')
   const [merchant, setMerchant] = useState('')
   const [description, setDescription] = useState('')
@@ -59,18 +61,31 @@ export const TransactionDialog = ({ handleClose, open }) => {
     )
   }
 
+  const checkForm = () => {
+    const errorCopy = { ...defaultFormErrors }
+
+    if (!user) errorCopy.user = 'Must select a user'
+    if (!merchant) errorCopy.merchant = 'Must select a merchant'
+    if (amount <= 0) errorCopy.amount = 'Amount must be greater than 0'
+
+    setFormErrors(errorCopy)
+    return Object.values(errorCopy).every(errorStr => !errorStr)
+  }
+
   const handleSubmit = async e => {
-    await addTransaction({
-      variables: {
-        user_id: user,
-        merchant_id: merchant,
-        description,
-        amount: parseInt(amount),
-        debit,
-        credit
-      }
-    })
-    handleClose()
+    if (checkForm()) {
+      await addTransaction({
+        variables: {
+          user_id: user,
+          merchant_id: merchant,
+          description,
+          amount: parseInt(amount),
+          debit,
+          credit
+        }
+      })
+      handleClose()
+    }
   }
 
   const { users, merchants } = data
@@ -80,9 +95,15 @@ export const TransactionDialog = ({ handleClose, open }) => {
       <DialogTitle css={titleCss}>Create New Transaction</DialogTitle>
       <DialogContent>
         <form css={formContainer}>
-          <FormControl css={formControlCss}>
+          <FormControl css={formControlCss} error={!!formErrors.user}>
             <InputLabel id='user-select-label'>User</InputLabel>
-            <Select id='user-select' labelId='user-select-label' onChange={handleChange(setUser)} value={user}>
+            <Select
+              error={!!formErrors.user}
+              id='user-select'
+              labelId='user-select-label'
+              onChange={handleChange(setUser)}
+              value={user}
+            >
               {users.map(user => (
                 <MenuItem
                   key={`users-select-${user.id}`}
@@ -90,8 +111,9 @@ export const TransactionDialog = ({ handleClose, open }) => {
                 >{`${user.firstName} ${user.lastName}`}</MenuItem>
               ))}
             </Select>
+            {formErrors.user && <FormHelperText>{formErrors.user}</FormHelperText>}
           </FormControl>
-          <FormControl css={formControlCss}>
+          <FormControl css={formControlCss} error={!!formErrors.merchant}>
             <InputLabel id='merchant-select-label'>Merchant</InputLabel>
             <Select
               id='merchant-select'
@@ -103,9 +125,12 @@ export const TransactionDialog = ({ handleClose, open }) => {
                 <MenuItem key={`merchants-select-${merchant.id}`} value={merchant.id}>{`${merchant.name}`}</MenuItem>
               ))}
             </Select>
+            {formErrors.merchant && <FormHelperText>{formErrors.merchant}</FormHelperText>}
           </FormControl>
           <FormControl css={formControlCss}>
             <TextField
+              error={!!formErrors.amount}
+              helperText={formErrors.amount}
               id='amount-field'
               label='Amount'
               onChange={handleChange(setAmount)}
@@ -162,6 +187,12 @@ export const TransactionDialog = ({ handleClose, open }) => {
 TransactionDialog.propTypes = {
   handleClose: func,
   open: bool
+}
+
+const defaultFormErrors = {
+  user: '',
+  merchant: '',
+  amount: ''
 }
 
 const formContainer = css`

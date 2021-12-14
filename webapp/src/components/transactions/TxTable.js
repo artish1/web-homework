@@ -25,7 +25,7 @@ import { TransactionDialog } from './transaction-dialog'
 // const makeDataTestId = (transactionId, fieldName) => `transaction-${transactionId}-${fieldName}`
 
 export function TxTable({ data }) {
-  const [dialogOpen, setDialogOpen] = useState(true)
+  const [dialogOpen, setDialogOpen] = useState(false)
   // const [removeTransaction] = useMutation(RemoveTransaction, {
   //   refetchQueries: ['GetTransactions']
   // })
@@ -115,7 +115,7 @@ const Row = ({ transaction }) => {
         <TableCell>{amount}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell colSpan={6} style={{ paddingBottom: 0, paddingTop: 0 }}>
+        <TableCell colSpan={6} css={collapsedCell}>
           <Collapse in={open}>
             <Box margin={1}>
               <h3>Merchant:</h3>
@@ -135,6 +135,13 @@ const rowStyle = css`
   td {
     border-bottom: unset;
   }
+`
+
+const collapsedCell = css`
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+
+  background-color: #f3f3f3;
 `
 
 const controlsContainer = css`
