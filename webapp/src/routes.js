@@ -1,9 +1,8 @@
 import React from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { css } from '@emotion/core'
-import { Home } from './home'
-import { Transactions } from './transactions'
 import { NavBar } from './components/nav/NavBar'
+import navData from './data/navigation'
 
 function AppRouter() {
   return (
@@ -11,8 +10,9 @@ function AppRouter() {
       <div css={layoutStyle}>
         <NavBar />
         <div className='main-content' css={contentStyle}>
-          <Route component={Home} exact path='/' />
-          <Route component={Transactions} exact path='/transactions' />
+          {navData.map((navItem, index) => (
+            <Route component={navItem.component} exact={navItem.exact} key={index} path={navItem.route} />
+          ))}
         </div>
       </div>
     </Router>
