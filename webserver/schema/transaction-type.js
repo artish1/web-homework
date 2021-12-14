@@ -1,6 +1,10 @@
 const graphql = require('graphql')
 const { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLFloat } = graphql
-
+const MerchantType = require('./merchant-type')
+const { MerchantModel } = require('../data-models/Merchant')
+const { UserModel } = require('../data-models/User')
+const UserType = require('./user-type')
+// console.log('Merchant Type: ', MerchantType)
 const TransactionType = new GraphQLObjectType({
   name: 'Transaction',
   fields: () => ({
@@ -10,7 +14,19 @@ const TransactionType = new GraphQLObjectType({
     merchant_id: { type: GraphQLString },
     debit: { type: GraphQLBoolean },
     credit: { type: GraphQLBoolean },
-    amount: { type: GraphQLFloat }
+    amount: { type: GraphQLFloat },
+    user: {
+      type: UserType,
+      resolve(parent) {
+        return UserModel.findById(parent.user_id)
+      }
+    },
+    merchant: {
+      type: MerchantType,
+      resolve(parent) {
+        return MerchantModel.findById(parent.merchant_id)
+      }
+    }
   })
 })
 
