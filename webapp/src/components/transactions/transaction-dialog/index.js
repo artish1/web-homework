@@ -24,7 +24,8 @@ import { css } from '@emotion/react'
 export const TransactionDialog = ({ handleClose, open }) => {
   const { data, loading, error } = useQuery(GetUsersAndMerchants)
   const [addTransaction] = useMutation(AddTransaction, {
-    awaitRefetchQueries: ['GetTransactions']
+    refetchQueries: ['GetTransactions'],
+    awaitRefetchQueries: true
   })
   const [user, setUser] = useState('')
   const [merchant, setMerchant] = useState('')
@@ -59,7 +60,6 @@ export const TransactionDialog = ({ handleClose, open }) => {
   }
 
   const handleSubmit = async e => {
-    console.log('amount: ', amount)
     await addTransaction({
       variables: {
         user_id: user,
