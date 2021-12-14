@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client'
 import GetTransactions from '../gql/transactions.gql'
 import { StyledCard as Card } from '../components/card/Card'
 import { css } from '@emotion/react'
+import { BasicError } from '../components/errors/BasicError'
 
 export function Home() {
   const { loading, error, data = {} } = useQuery(GetTransactions)
@@ -12,7 +13,7 @@ export function Home() {
   }
 
   if (error) {
-    return <Fragment>¯\_(ツ)_/¯</Fragment>
+    return <BasicError />
   }
 
   return (
