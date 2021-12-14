@@ -1,8 +1,8 @@
 import React, { useState, Fragment } from 'react'
 import { arrayOf, string, bool, number, shape } from 'prop-types'
 import { css } from '@emotion/core'
-// import { useMutation } from '@apollo/client'
-// import RemoveTransaction from '../../gql/removeTransaction.gql'
+import { useMutation } from '@apollo/client'
+import RemoveTransaction from '../../gql/removeTransaction.gql'
 import {
   Paper,
   Box,
@@ -14,21 +14,22 @@ import {
   IconButton,
   TableContainer,
   Collapse,
-  Button
+  Button,
+  Chip
 } from '@material-ui/core'
 
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
+import DeleteIcon from '@material-ui/icons/Delete'
+import EditIcon from '@material-ui/icons/Edit'
 import AddIcon from '@material-ui/icons/Add'
 import { TransactionDialog } from './transaction-dialog'
+import { RemoveDialog } from './remove-dialog'
 
 // const makeDataTestId = (transactionId, fieldName) => `transaction-${transactionId}-${fieldName}`
 
 export function TxTable({ data }) {
   const [dialogOpen, setDialogOpen] = useState(false)
-  // const [removeTransaction] = useMutation(RemoveTransaction, {
-  //   refetchQueries: ['GetTransactions']
-  // })
   const handleDialogClose = () => {
     setDialogOpen(false)
   }
@@ -48,6 +49,7 @@ export function TxTable({ data }) {
               <TableCell>User</TableCell>
               <TableCell>Merchant</TableCell>
               <TableCell>Amount</TableCell>
+              <TableCell align='right'>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -96,14 +98,32 @@ export function TxTable({ data }) {
 }
 
 const Row = ({ transaction }) => {
+  const [removeTransaction] = useMutation(RemoveTransaction, {
+    refetchQueries: ['GetTransactions']
+  })
   const [open, setOpen] = useState(false)
+  const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
+
+  const handleRemove = () => {
+    removeTransaction({
+      variables: {
+        transaction_id: transaction.id
+      }
+    })
+  }
+
   const {
     amount,
-    user: { firstName, lastName },
+    user: { firstName, lastName, dob },
     merchant
   } = transaction
   return (
     <Fragment>
+      <RemoveDialog
+        handleCancel={() => setRemoveDialogOpen(false)}
+        handleConfirm={handleRemove}
+        open={removeDialogOpen}
+      />
       <TableRow css={rowStyle}>
         <TableCell>
           <IconButton onClick={() => setOpen(!open)} size='small'>
@@ -113,15 +133,40 @@ const Row = ({ transaction }) => {
         <TableCell>{`${firstName} ${lastName}`}</TableCell>
         <TableCell>{merchant.name}</TableCell>
         <TableCell>{amount}</TableCell>
+        <TableCell align='right'>
+          <IconButton css={editButton} onClick={() => setOpen(!open)} size='small'>
+            <EditIcon />
+          </IconButton>
+          <IconButton onClick={() => setRemoveDialogOpen(true)} size='small'>
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell colSpan={6} css={collapsedCell}>
           <Collapse in={open}>
-            <Box margin={1}>
-              <h3>Merchant:</h3>
-              <p>id: {merchant.id}</p>
-              <p>name: {merchant.name}</p>
-              <p>description: {merchant.description}</p>
+            <Box css={infoContainer} padding={2}>
+              <Box css={flexContainer}>
+                <Box css={rowCard}>
+                  <h3>{merchant.name}</h3>
+                  <Chip css={chipCss} label='Merchant' />
+                  <p>{merchant.description}</p>
+                </Box>
+                <Box css={rowCard}>
+                  <h3>{`${firstName} ${lastName}`}</h3>
+                  <Chip css={chipCss} label='User' />
+                  <p>{dob}</p>
+                </Box>
+              </Box>
+              <Box css={rowCard}>
+                <h3>Transaction</h3>
+                <div>
+                  {transaction.debit && <Chip color='primary' css={chipCss} label='Debit' variant='outlined' />}
+                  {transaction.credit && <Chip color='primary' css={chipCss} label='Credit' variant='outlined' />}
+                </div>
+                <p className='transaction-amount'>${transaction.amount}</p>
+                <p className='transaction-description'>{transaction.description}</p>
+              </Box>
             </Box>
           </Collapse>
         </TableCell>
@@ -134,6 +179,61 @@ const rowStyle = css`
   border-bottom: unset;
   td {
     border-bottom: unset;
+  }
+`
+const chipCss = css`
+  margin: 0px 8px 8px 8px;
+`
+
+const editButton = css`
+  margin-right: 8px !important;
+`
+
+const flexContainer = css`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+`
+const rowCard = css`
+  border-radius: 4px;
+  border: 1px solid black;
+  padding: 8px;
+  box-sizing: border-box;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 16px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  .transaction-description {
+    font-size: 17px;
+  }
+
+  .transaction-amount {
+    font-weight: bold;
+    font-size: 36px;
+  }
+
+  .name {
+    font-size: 32px;
+  }
+`
+
+const infoContainer = css`
+  p {
+    margin: 0px 0px 6px 0px;
+    padding: 0;
+    color: #777;
+  }
+
+  h3 {
+    font-size: 24px;
+    color: #4f4f4f;
+    padding: 0;
+    margin: 0;
   }
 `
 
