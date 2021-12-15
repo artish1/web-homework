@@ -1,0 +1,7 @@
+mutation AddMerchant($name: String, $description: String) {
+  addMerchant(name: $name, description: $description) {
+    id
+    name
+    description
+  }
+}
