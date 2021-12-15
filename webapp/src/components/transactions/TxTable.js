@@ -2,6 +2,7 @@ import React, { useState, Fragment } from 'react'
 import { arrayOf, string, bool, number, shape } from 'prop-types'
 import { css } from '@emotion/core'
 import { useMutation } from '@apollo/client'
+import { useHistory } from 'react-router-dom'
 import RemoveTransaction from '../../gql/removeTransaction.gql'
 import {
   Paper,
@@ -103,6 +104,7 @@ const Row = ({ transaction }) => {
   })
   const [open, setOpen] = useState(false)
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
+  const history = useHistory()
 
   const handleRemove = () => {
     removeTransaction({
@@ -134,7 +136,7 @@ const Row = ({ transaction }) => {
         <TableCell>{merchant.name}</TableCell>
         <TableCell>{amount}</TableCell>
         <TableCell align='right'>
-          <IconButton css={editButton} onClick={() => setOpen(!open)} size='small'>
+          <IconButton css={editButton} onClick={() => history.push(`/transactions/${transaction.id}`)} size='small'>
             <EditIcon />
           </IconButton>
           <IconButton onClick={() => setRemoveDialogOpen(true)} size='small'>

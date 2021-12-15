@@ -4,6 +4,8 @@ import { TxTable } from '../components/transactions/TxTable'
 import { useQuery } from '@apollo/client'
 import GetTransactions from '../gql/transactions.gql'
 import { BasicError } from '../components/errors/BasicError'
+import { Route } from 'react-router-dom'
+import { EditTransaction } from '../components/transactions/edit-transaction'
 
 export const Transactions = () => {
   const { loading, error, data = {} } = useQuery(GetTransactions)
@@ -17,6 +19,7 @@ export const Transactions = () => {
   }
   return (
     <div css={containerStyles}>
+      <Route component={EditTransaction} exact path='/transactions/:transactionId' />
       <TxTable data={data.transactions} />
     </div>
   )

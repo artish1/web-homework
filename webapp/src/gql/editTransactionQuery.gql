@@ -1,0 +1,31 @@
+query GetEditTransactionData($transactionId: String) {
+  transaction(id: $transactionId) {
+    id
+    amount
+    credit
+    debit
+    description
+    user {
+      id
+      firstName
+      lastName
+      dob
+    }
+    merchant {
+      id
+      name
+      description
+    }
+  }
+
+  merchants {
+    id
+    name
+  }
+
+  users {
+    id
+    firstName
+    lastName
+  }
+}

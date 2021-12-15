@@ -20,7 +20,7 @@ const navigationData = [
     route: '/transactions',
     component: Transactions,
     icon: ReceiptIcon,
-    exact: true
+    exact: false
   },
   {
     label: 'Users',
