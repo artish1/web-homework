@@ -1,14 +1,16 @@
 import React from 'react'
-import Card from '@material-ui/core/Card'
 import { object } from 'prop-types'
+import { css } from '@emotion/react'
 
 export const StyledCard = props => {
-  return (
-    <Card style={{ padding: 16, boxShadow: '0px 0px 4px rgba(0,0,0,0.25)', ...props.style }}>{props.children}</Card>
-  )
+  return <div css={root}>{props.children}</div>
 }
 
+const root = css`
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+  padding: 16px;
+`
+
 StyledCard.propTypes = {
-  children: object,
-  style: object
+  children: object
 }
