@@ -4,11 +4,16 @@ const MerchantType = require('./merchant-type')
 const { MerchantModel } = require('../data-models/Merchant')
 const { UserModel } = require('../data-models/User')
 const UserType = require('./user-type')
-// console.log('Merchant Type: ', MerchantType)
+
 const TransactionType = new GraphQLObjectType({
   name: 'Transaction',
   fields: () => ({
-    id: { type: GraphQLString },
+    id: {
+      type: GraphQLString,
+      resolve(parent) {
+        return parent.id ? parent.id : parent._id
+      }
+    },
     user_id: { type: GraphQLString },
     description: { type: GraphQLString },
     merchant_id: { type: GraphQLString },
