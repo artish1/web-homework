@@ -27,7 +27,7 @@ import AddIcon from '@material-ui/icons/Add'
 import { TransactionDialog } from './transaction-dialog'
 import { RemoveDialog } from './remove-dialog'
 
-// const makeDataTestId = (transactionId, fieldName) => `transaction-${transactionId}-${fieldName}`
+const makeDataTestId = (transactionId, fieldName) => `transaction-${transactionId}-${fieldName}`
 
 export function TxTable({ data }) {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -43,7 +43,7 @@ export function TxTable({ data }) {
         </Button>
       </div>
       <TableContainer component={Paper}>
-        <Table>
+        <Table data-testid='txtable'>
           <TableHead>
             <TableRow>
               <TableCell />
@@ -98,6 +98,21 @@ export function TxTable({ data }) {
   // )
 }
 
+export const RowCells = ({ transaction }) => {
+  const {
+    user: { firstName, lastName },
+    merchant,
+    amount
+  } = transaction
+  return (
+    <Fragment>
+      <TableCell data-testid={makeDataTestId(transaction.id, 'name')}>{`${firstName} ${lastName}`}</TableCell>
+      <TableCell data-testid={makeDataTestId(transaction.id, 'merchant-name')}>{merchant.name}</TableCell>
+      <TableCell data-testid={makeDataTestId(transaction.id, 'amount')}>{amount}</TableCell>
+    </Fragment>
+  )
+}
+
 const Row = ({ transaction }) => {
   const [removeTransaction] = useMutation(RemoveTransaction, {
     refetchQueries: ['GetTransactions']
@@ -115,7 +130,6 @@ const Row = ({ transaction }) => {
   }
 
   const {
-    amount,
     user: { firstName, lastName, dob },
     merchant
   } = transaction
@@ -132,9 +146,7 @@ const Row = ({ transaction }) => {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell>{`${firstName} ${lastName}`}</TableCell>
-        <TableCell>{merchant.name}</TableCell>
-        <TableCell>{amount}</TableCell>
+        <RowCells transaction={transaction} />
         <TableCell align='right'>
           <IconButton css={editButton} onClick={() => history.push(`/transactions/${transaction.id}`)} size='small'>
             <EditIcon />
@@ -152,7 +164,7 @@ const Row = ({ transaction }) => {
                 <Box css={rowCard}>
                   <h3>{merchant.name}</h3>
                   <Chip css={chipCss} label='Merchant' />
-                  <p>{merchant.description}</p>
+                  <p data-testid={makeDataTestId(transaction.id, 'merchant-description')}>{merchant.description}</p>
                 </Box>
                 <Box css={rowCard}>
                   <h3>{`${firstName} ${lastName}`}</h3>
@@ -163,11 +175,32 @@ const Row = ({ transaction }) => {
               <Box css={rowCard}>
                 <h3>Transaction</h3>
                 <div>
-                  {transaction.debit && <Chip color='primary' css={chipCss} label='Debit' variant='outlined' />}
-                  {transaction.credit && <Chip color='primary' css={chipCss} label='Credit' variant='outlined' />}
+                  {transaction.debit && (
+                    <Chip
+                      color='primary'
+                      css={chipCss}
+                      data-testid={makeDataTestId(transaction.id, 'chip-debit')}
+                      label='Debit'
+                      variant='outlined'
+                    />
+                  )}
+                  {transaction.credit && (
+                    <Chip
+                      color='primary'
+                      css={chipCss}
+                      data-testid={makeDataTestId(transaction.id, 'chip-credit')}
+                      label='Credit'
+                      variant='outlined'
+                    />
+                  )}
                 </div>
                 <p className='transaction-amount'>${transaction.amount}</p>
-                <p className='transaction-description'>{transaction.description}</p>
+                <p
+                  className='transaction-description'
+                  data-testid={makeDataTestId(transaction.id, 'transaction-description')}
+                >
+                  {transaction.description}
+                </p>
               </Box>
             </Box>
           </Collapse>
@@ -256,20 +289,29 @@ const controlsContainer = css`
 const transactionPropType = shape({
   id: string,
   user_id: string,
-  user: {
+  user: shape({
     firstName: string,
     lastName: string,
     dob: string,
     string
-  },
+  }),
   description: string,
   merchant_id: string,
+  merchant: shape({
+    id: string,
+    name: string,
+    description: string
+  }),
   debit: bool,
   credit: bool,
   amount: number
 })
 
 Row.propTypes = {
+  transaction: transactionPropType
+}
+
+RowCells.propTypes = {
   transaction: transactionPropType
 }
 

@@ -1,33 +1,39 @@
 const transactions = [
   {
-    'id': '5d5c1f747e01cd704f18f863',
-    'user_id': 'employee4',
-    'description': 'cleaningsupplies',
-    'merchant_id': 'walmart',
-    'debit': true,
-    'credit': false,
-    'amount': 150,
-    '__typename': 'Transaction'
+    id: '5d5c1f747e01cd704f18f863',
+    user: {
+      id: '61ab155437c1e82d19cdc0be',
+      firstName: 'Mark',
+      lastName: 'Artishuk',
+      dob: '01/01/1970'
+    },
+    description: 'cleaningsupplies',
+    merchant: {
+      id: '61ab1d966485fd30c19fce9d',
+      name: 'walmart',
+      description: 'Default Merchant Description'
+    },
+    debit: true,
+    credit: false,
+    amount: 150
   },
   {
-    'id': '5d5c1f747e01cd704f18f864',
-    'user_id': 'employee3',
-    'description': 'refund',
-    'merchant_id': 'walmart',
-    'debit': false,
-    'credit': true,
-    'amount': 250,
-    '__typename': 'Transaction'
-  },
-  {
-    'id': '5d5c1f747e01cd704f18f865',
-    'user_id': 'employee5',
-    'description': 'refund',
-    'merchant_id': 'walmart',
-    'debit': false,
-    'credit': true,
-    'amount': 100,
-    '__typename': 'Transaction'
+    id: '61bafef9b1513e8205969f1b',
+    amount: 20,
+    credit: false,
+    debit: true,
+    description: 'Deluxe Sandwich',
+    user: {
+      id: '61ba448ab1513e8205969f16',
+      firstName: 'John',
+      lastName: 'Doe',
+      dob: ''
+    },
+    merchant: {
+      id: '61ba3f61b1513e8205969f10',
+      name: 'Chick Fil A',
+      description: 'Quality Sandwiches'
+    }
   }
 ]
 
