@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, act } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import { RowCells } from './TxTable'
 import { transactions } from '../../../mocks/transactions-data'
 import { Transactions } from '../../transactions/index'
